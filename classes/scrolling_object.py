@@ -55,7 +55,11 @@ class Skill(ScrollingObject):
 	def check_collision(self):
 		if self.rect.colliderect(self.player.hit_box):
 			self.spawn_particles()
+			self.update_progress()
 			self.kill()
+
+	def update_progress(self):
+		self.game.ui.add_skill()
 
 	def spawn_particles(self):
 		for _ in range(random.randint(10, 15)):
@@ -101,7 +105,7 @@ class Obstacle(ScrollingObject):
 			self.kill()
 
 	def loop(self):
-		self.kill()
+		self.cleanup()
 		if self.on_screen():
 			self.update_rect()
 			self.draw()

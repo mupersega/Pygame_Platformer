@@ -10,9 +10,8 @@ class Background:
 		self.z = z
 		self.x = 0
 		self.bg_img = pygame.transform.scale(
-			image, self.game.screen.get_size())
+			image, self.game.screen.get_size()).convert()
 		self.surface = pygame.Surface(self.game.screen.get_size())
-		self.positions = [- self.surface.get_width(), 0, self.surface.get_width()]
 
 	def scroll(self, amt):
 		self.x -= amt / self.z

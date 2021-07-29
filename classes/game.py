@@ -6,7 +6,7 @@ import time
 from classes.background import Background
 from classes.player import Player
 from classes.scrolling_object import Structure, Obstacle, Skill
-from classes.triggers import Trigger
+from classes.ui import Ui
 
 pygame.init()
 
@@ -23,6 +23,8 @@ rocks = [
 	pygame.image.load('./assets/rock_1-min.png'),
 	pygame.image.load('./assets/rock_2-min.png')
 ]
+# - UI - #
+ui_img = pygame.image.load('./assets/ui-min.png')
 
 
 class Game:
@@ -34,13 +36,13 @@ class Game:
 
 		# Game Settings
 		self.ground_level = int(self.height * .90)
-		self.fps = 60
+		self.fps = 120
 
 		# Spawn timing.
 		self.spawn_time = time.time()
-		self.skill_spawn_spacing = 10
+		self.skill_spawn_spacing = 3
 		self.skill_spawn_timer = self.skill_spawn_spacing
-		self.obstacle_spawn_spacing = 10
+		self.obstacle_spawn_spacing = 3
 		self.obstacle_spawn_timer = self.obstacle_spawn_spacing
 
 		# Classes
@@ -48,7 +50,7 @@ class Game:
 
 		self.backgrounds = [
 			# Background(self, 7, sky_bg.convert()),
-			Background(self, 3, trees_bg.convert()),
+			Background(self, 3, trees_bg.convert())
 			# Background(self, 1, grass_bg.convert())
 		]
 		self.foregrounds = [
@@ -61,7 +63,7 @@ class Game:
 			pygame.Vector2(3000, self.ground_level + 20)
 		)
 
-		self.ui = Ui(self)
+		self.ui = Ui(self, ui_img)
 
 		self.scrolling_objects = []
 		self.structures = []
@@ -89,7 +91,7 @@ class Game:
 			i.scroll(amt)
 
 	def spawn_skill(self):
-		max_skills = 4
+		max_skills = 5
 		if len(self.skills) < max_skills:
 			rand_x_offset = random.randint(self.width, self.width * 2)
 			rand_y_offset = random.choice([50, 200, 400])
@@ -108,11 +110,12 @@ class Game:
 
 	def spawn(self):
 		if self.spawn_time < time.time():
+			print("spawning")
 			self.spawn_time += 1
 			# Spawn a skill off screen
 			if random.randint(0, self.skill_spawn_timer) < 2:
 				self.spawn_skill()
-			if random.randint(0, self.skill_spawn_timer) < 2:
+			if random.randint(0, self.obstacle_spawn_timer) < 2:
 				self.spawn_obstacle()
 
 	def update_backgrounds(self):
@@ -160,9 +163,11 @@ class Game:
 			self.screen.fill([0, 0, 0])
 			self.run_loops(self.backgrounds)
 			# pygame.draw.line(self.screen, [100, 0, 0], (0, self.ground_level), (self.width, self.ground_level))
+			self.run_loop(self.excel_temple)
 			self.run_loops(self.particles, self.obstacles, self.skills)
 			self.run_loop(self.player)
 			self.run_loops(self.foregrounds)
+			self.run_loop(self.ui)
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
 

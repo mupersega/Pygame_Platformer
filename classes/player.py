@@ -45,7 +45,6 @@ class Player:
 			self.spritesheet_row = 2  # row 3(2) is jump animations
 
 	def update(self):
-		self.altitude = self.game.ground_level - self.rect.bottom
 		if self.moving_left:
 			self.move_left()
 		if self.moving_right:
@@ -54,10 +53,8 @@ class Player:
 		self.rect.top = self.location.y
 		self.hit_box.top = self.location.y
 		self.game.background_scroll(self.velocity.x)
-		# if not self.moving_left or not self.moving_right:
 		if self.on_ground():
 			self.velocity.x -= self.velocity.x * .2
-		# self.velocity.y *= .97
 		self.jump_update()
 
 	def on_ground(self):
@@ -65,10 +62,6 @@ class Player:
 
 	def jump_update(self):
 		if not self.on_ground():
-			# Update Vector information
-			# Altitude based
-			# self.velocity.y += self.altitude ** .1
-			# Gravity based
 			self.velocity += self.gravity
 		else:
 			self.rect.bottom = self.game.ground_level
