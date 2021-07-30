@@ -7,6 +7,8 @@ from classes.background import Background
 from classes.player import Player
 from classes.scrolling_object import Structure, Obstacle, Skill
 from classes.ui import Ui
+from classes.banner import Banner
+from utilities.skills import skills_info
 
 pygame.init()
 
@@ -16,6 +18,8 @@ grass_bg = pygame.image.load('./assets/full_bg_grass-min.png')
 sky_bg = pygame.image.load('./assets/full_bg_sky-min.png')
 trees_bg = pygame.image.load('./assets/full_bg_trees-min.png')
 shrubs_bg = pygame.image.load('./assets/full_bg_shrubs-min.png')
+# - Player - #
+player_spritesheet = pygame.transform.scale(pygame.image.load('./assets/character-min.png'), (100 * 4, 100 * 4))
 # - Structures - #
 excel_temple_img = pygame.image.load('./assets/excel_temple_outer-min.png')
 # - Obstacles - #
@@ -25,6 +29,10 @@ rocks = [
 ]
 # - UI - #
 ui_img = pygame.image.load('./assets/ui-min.png')
+# - Banners - #
+banners = [
+	pygame.image.load('./assets/banner-min.png'),
+]
 
 
 class Game:
@@ -36,7 +44,10 @@ class Game:
 
 		# Game Settings
 		self.ground_level = int(self.height * .90)
-		self.fps = 60
+		self.fps = 120
+		# Different states and their accompanying information
+		self.state = 0
+		self.state_dict = skills_info[self.state]
 
 		# Spawn timing.
 		self.spawn_time = time.time()
@@ -46,7 +57,7 @@ class Game:
 		self.obstacle_spawn_timer = self.obstacle_spawn_spacing
 
 		# Classes
-		self.player = Player(self)
+		self.player = Player(self, player_spritesheet.convert())
 
 		self.backgrounds = [
 			# Background(self, 7, sky_bg.convert()),
@@ -57,13 +68,8 @@ class Game:
 			Background(self, 1, grass_bg.convert())
 		]
 
-		self.excel_temple = Structure(
-			self,
-			excel_temple_img,
-			pygame.Vector2(3000, self.ground_level + 20)
-		)
-
-		self.ui = Ui(self, ui_img)
+		self.ui = Ui(self, ui_img, len(skills_info))
+		self.banner_font = pygame.font.Font('./assets/hellovetica.ttf', 20)
 
 		self.scrolling_objects = []
 		self.structures = []
@@ -71,17 +77,13 @@ class Game:
 		self.obstacles = []
 		self.triggers = []
 		self.particles = []
-		# self.setup_on_start()
+		self.banners = []
+		self.setup_on_start()
 
 	def setup_on_start(self):
-		for _ in range(10):
-			new_vec = pygame.Vector2(random.randint(1000, 4000),  self.ground_level + 10)
-			self.scrolling_objects.append(
-				Obstacle(self, random.choice(rocks), new_vec))
-		for _ in range(50):
-			new_vec = pygame.Vector2(random.randint(1000, 10000),  self.ground_level - random.randint(40, 400))
-			self.scrolling_objects.append(
-				Skill(self, random.choice(rocks), new_vec))
+		new_vec = pygame.Vector2(random.randint(600, 1000),  self.ground_level - random.randint(40, 400))
+		self.skills.append(
+			Skill(self, random.choice(rocks), new_vec))
 
 	def background_scroll(self, amt):
 		for i in self.backgrounds:
@@ -116,6 +118,18 @@ class Game:
 				self.spawn_skill()
 			if random.randint(0, self.obstacle_spawn_timer) < 2:
 				self.spawn_obstacle()
+
+	def diversity_lvl_up(self):
+		self.state += 1
+		self.state_dict = skills_info[self.state]
+		for i in self.banners:
+			i.y_offset += i.rect.height
+		self.banners.append(Banner(self, self.state_dict["text"]))
+		if skills_info[self.state]["structure"] != "None":
+			img = globals()[f"{skills_info[self.state]['structure']}_img"]
+			self.structures.append(Structure(self, img, (
+				pygame.Vector2(self.player.location.x + self.width * 2, self.ground_level + 20
+			))))
 
 	def update_backgrounds(self):
 		for i in self.backgrounds:
@@ -162,10 +176,10 @@ class Game:
 			self.screen.fill([0, 0, 0])
 			self.run_loops(self.backgrounds)
 			# pygame.draw.line(self.screen, [100, 0, 0], (0, self.ground_level), (self.width, self.ground_level))
-			self.run_loop(self.excel_temple)
-			self.run_loops(self.particles, self.obstacles, self.skills)
+			self.run_loops(self.structures, self.particles, self.obstacles, self.skills)
 			self.run_loop(self.player)
 			self.run_loops(self.foregrounds)
+			self.run_loops(self.banners)
 			self.run_loop(self.ui)
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

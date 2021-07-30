@@ -4,7 +4,7 @@ import pygame
 class Ui:
 	"""Manages the display at the top of the screen in which the diversity level and the current skills
 	are displayed."""
-	def __init__(self, game, img):
+	def __init__(self, game, img, levels):
 		self.game = game
 		self.screen = game.screen
 		self.width = self.game.width * .2
@@ -14,29 +14,26 @@ class Ui:
 		self.skills_rect = pygame.Rect(self.rect.left, self.rect.centery, self.rect.width, self.rect.height / 2)
 		self.image = pygame.transform.scale(img, self.rect.size).convert()
 
+		self.skilldust_this_lvl = int(self.game.state_dict["skill_dust"])
 		self.skills = 0
+		self.total_diversity = levels
 		self.diversity = 0
 		self.flash_timer = 0
 
-		self.skills_x = self.rect.left + self.width * self.skills / 100
-		self.diversity_x = self.rect.left + self.width * self.diversity / 4
+		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
+		self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
 
-	def add_skill(self):
+	def add_skill_dust(self):
 		self.skills += 1
-		self.skills_x = self.rect.left + self.width * self.skills / 100
-		if self.skills == 100:
+		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
+		if self.skills == self.skilldust_this_lvl:
+			self.game.diversity_lvl_up()
 			self.diversity += 1
-			self.diversity_x = self.rect.left + self.width * self.diversity / 4
 			self.skills = 0
-			self.spawn_new_structure()
-		if self.diversity == 3:
-			print("winner")
+			self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
 
 	def spawn_new_structure(self):
 		pass
-
-	def flash(self):
-		self.flash_timer += 1
 
 	def draw(self):
 		# Background
@@ -44,9 +41,9 @@ class Ui:
 		pygame.draw.rect(self.screen, [122, 25, 100], self.skills_rect)
 		# Main
 		pygame.draw.rect(self.screen, [200, 0, 0], (self.rect.topleft, (
-			self.width * self.diversity / 4, self.height * .5)))
+			self.width * self.diversity / self.total_diversity, self.height * .5)))
 		pygame.draw.rect(self.screen, [255, 50, 200], (self.skills_rect.topleft, (
-			self.width * self.skills / 100, self.height * .5)))
+			self.width * self.skills / self.skilldust_this_lvl, self.height * .5)))
 		# Line
 		pygame.draw.line(self.screen, [255, 100, 100], (
 			self.diversity_x, self.diversity_rect.top), (self.diversity_x, self.diversity_rect.bottom), width=1)

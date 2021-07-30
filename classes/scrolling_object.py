@@ -24,9 +24,9 @@ class ScrollingObject:
 		return pygame.transform.scale(img, (w * amt, h * amt))
 
 	def draw(self):
-		draw_x = self.location.x - self.player.location.x
 		self.screen.blit(self.image, self.rect.topleft)
-		pygame.draw.rect(self.screen, [0, 100, 100], self.rect, width=1)
+		# Hit box
+		# pygame.draw.rect(self.screen, [0, 100, 100], self.rect, width=1)
 
 
 class Structure(ScrollingObject):
@@ -59,16 +59,18 @@ class Skill(ScrollingObject):
 			self.kill()
 
 	def update_progress(self):
-		self.game.ui.add_skill()
+		self.game.ui.add_skill_dust()
 
 	def spawn_particles(self):
 		for _ in range(random.randint(10, 15)):
 			self.game.particles.append(
 				Particle(
-					self.game, pygame.Surface((5, 5)), pygame.Vector2(self.location), self.player.velocity))
+					self.game, pygame.Surface((6, 6)), pygame.Vector2(
+						self.location.x + self.rect.width / 2, self.location.y + self.rect.height / 2), self.player.velocity))
 			self.game.particles.append(
 				SkillDust(
-					self.game, pygame.Surface((5, 5)), pygame.Vector2(self.location), self.player.velocity))
+					self.game, pygame.Surface((5, 5)), pygame.Vector2(
+						self.location.x + self.rect.width / 2, self.location.y + self.rect.height / 2), self.player.velocity))
 
 	def kill(self):
 		if self in self.game.skills.copy():
@@ -80,6 +82,7 @@ class Skill(ScrollingObject):
 
 	def loop(self):
 		if self.on_screen():
+			self.cleanup()
 			self.update_rect()
 			self.draw()
 			self.check_collision()
@@ -93,11 +96,6 @@ class Obstacle(ScrollingObject):
 		if self.rect.colliderect(self.player.hit_box):
 			bounce_vec = pygame.Vector2(pygame.Vector2(self.player.hit_box.center) - self.rect.center).normalize()
 			self.player.velocity += bounce_vec * 5
-
-	def draw(self):
-		draw_x = self.location.x - self.player.location.x
-		self.screen.blit(self.image, (draw_x, self.location.y))
-		pygame.draw.rect(self.screen, [0, 100, 100], self.rect, width=1)
 
 	def kill(self):
 		if self in self.game.obstacles.copy():
@@ -122,9 +120,9 @@ class Particle(ScrollingObject):
 		self.life = random.randint(100, 200)
 		self.rgb = random.choice([(255, 255, 0), (255, 220, 150), (180, 180, 0)])
 		# Vectors.
-		self.inherited_velocity = pygame.Vector2(vel) * .5
+		self.inherited_velocity = pygame.Vector2(vel) * 1
 		self.velocity = pygame.Vector2(
-			random.uniform(-4, 4) * self.size, random.uniform(-2, -4) * self.size) + self.inherited_velocity
+			random.uniform(-2, 2) * self.size, random.uniform(-1, -2) * self.size) + self.inherited_velocity
 		self.gravity = pygame.Vector2(
 			0, random.uniform(1, 2))
 
@@ -143,6 +141,7 @@ class Particle(ScrollingObject):
 
 	def draw(self):
 		pygame.draw.rect(self.screen, self.rgb, self.rect)
+		pygame.draw.rect(self.screen, [0, 0, 50], self.rect, width=1)
 
 	def loop(self):
 		self.update_rect()
@@ -153,7 +152,6 @@ class Particle(ScrollingObject):
 class SkillDust(Particle):
 	def __init__(self, game, image, location, vel):
 		super().__init__(game, image, location, vel)
-		self.gravity = pygame.Vector2(0, random.uniform(-1, -.5))
 		self.direction = pygame.Vector2(self.location - self.player.location).normalize()
 		self.velocity = pygame.Vector2(
 			random.uniform(-3, 3) * self.size, random.uniform(3, 10) * self.size) - self.inherited_velocity
@@ -161,22 +159,19 @@ class SkillDust(Particle):
 
 	def arrive(self):
 		if self.rect.colliderect(self.game.ui.rect):
-			self.game.ui.add_skill()
-			self.game.ui.flash()
+			self.game.ui.add_skill_dust()
 			self.kill()
 
 	def update(self):
 		self.arrive()
 		self.direction = pygame.Vector2(
 			self.location - pygame.Vector2(
-				self.player.location.x + self.game.width / 2 + self.player.velocity.x * 10, self.game.ui.rect.bottom))
-		pygame.draw.circle(self.screen, [200, 0, 0], self.player.location, 10)
+				self.player.location.x + self.game.width / 2 + self.player.velocity.x * 15, self.game.ui.rect.bottom))
 		if self.rect.bottom >= self.game.ground_level:
 			self.velocity.y *= -.6
-		# self.velocity += self.gravity
-		self.velocity -= self.direction * .004
+		self.velocity -= self.direction * .002
 		self.location += self.velocity
-		self.velocity *= .95
+		self.velocity *= .97
 		self.life -= 1
 		if self.life <= 0:
 			self.kill()

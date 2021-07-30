@@ -7,19 +7,19 @@ SPRITE_SHEET = pygame.transform.scale(pygame.image.load('./assets/character-min.
 class Player:
 	"""This class manages the player, for simplicity's sake it will always be drawn in
 	the centre of the screen and the display surface will move beneath him."""
-	def __init__(self, game):
+	def __init__(self, game, spritesheet):
 		self.game = game
-		self.frames = SPRITE_SHEET.convert()
+		self.frames = SPRITE_SHEET
 		self.sprite = pygame.Surface((self.frames.get_width() / 4, self.frames.get_height()))
 		self.frame_w, self.frame_h = self.frames.get_width() / 4, self.frames.get_height() / 4
 		self.rect = pygame.Rect(self.game.width / 2, 0, self.frame_w, self.frame_h)
 		self.hit_box = pygame.Rect(self.game.width / 2 + self.frame_w / 4, 0, self.frame_w / 2, self.frame_h)
 
-		self.gravity = pygame.Vector2(0, 2)
+		self.gravity = pygame.Vector2(0, 1)
 		self.acceleration = pygame.Vector2(3, 0)
-		self.base_speed = 5
+		self.base_speed = 3
 		self.speed = self.base_speed
-		self.top_speed = 10
+		self.top_speed = 6
 		self.location = pygame.Vector2(0, self.game.ground_level - self.rect.height)
 		self.velocity = pygame.Vector2(0, 0)
 		self.altitude = 0
@@ -40,7 +40,7 @@ class Player:
 
 	def jump(self):
 		if self.on_ground():
-			self.velocity.y -= 20 + self.speed * 2
+			self.velocity.y -= 15 + self.speed * 2
 			self.velocity.x += self.velocity.x * .3
 			self.spritesheet_row = 2  # row 3(2) is jump animations
 
@@ -99,8 +99,9 @@ class Player:
 
 	def draw(self):
 		frame = self.frame_counter % 4
-		pygame.draw.rect(self.game.screen, [0, 100, 50], self.rect, width=1)
-		pygame.draw.rect(self.game.screen, [100, 100, 50], self.hit_box, width=1)
+		# Hit boxes
+		# pygame.draw.rect(self.game.screen, [0, 100, 50], self.rect, width=1)
+		# pygame.draw.rect(self.game.screen, [100, 100, 50], self.hit_box, width=1)
 
 		self.game.screen.blit(self.frames, (
 				self.game.width / 2, self.rect.top), (
