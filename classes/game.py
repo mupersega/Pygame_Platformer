@@ -44,7 +44,7 @@ class Game:
 
 		# Game Settings
 		self.ground_level = int(self.height * .90)
-		self.fps = 120
+		self.fps = 90
 		# Different states and their accompanying information
 		self.state = 0
 		self.state_dict = skills_info[self.state]
