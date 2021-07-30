@@ -66,6 +66,9 @@ class Skill(ScrollingObject):
 			self.game.particles.append(
 				Particle(
 					self.game, pygame.Surface((5, 5)), pygame.Vector2(self.location), self.player.velocity))
+			self.game.particles.append(
+				SkillDust(
+					self.game, pygame.Surface((5, 5)), pygame.Vector2(self.location), self.player.velocity))
 
 	def kill(self):
 		if self in self.game.skills.copy():
@@ -146,3 +149,34 @@ class Particle(ScrollingObject):
 		self.update()
 		self.draw()
 
+
+class SkillDust(Particle):
+	def __init__(self, game, image, location, vel):
+		super().__init__(game, image, location, vel)
+		self.gravity = pygame.Vector2(0, random.uniform(-1, -.5))
+		self.direction = pygame.Vector2(self.location - self.player.location).normalize()
+		self.velocity = pygame.Vector2(
+			random.uniform(-3, 3) * self.size, random.uniform(3, 10) * self.size) - self.inherited_velocity
+		self.rgb = random.choice([(255, 0, 150), (255, 100, 255), (200, 50, 255)])
+
+	def arrive(self):
+		if self.rect.colliderect(self.game.ui.rect):
+			self.game.ui.add_skill()
+			self.game.ui.flash()
+			self.kill()
+
+	def update(self):
+		self.arrive()
+		self.direction = pygame.Vector2(
+			self.location - pygame.Vector2(
+				self.player.location.x + self.game.width / 2 + self.player.velocity.x * 10, self.game.ui.rect.bottom))
+		pygame.draw.circle(self.screen, [200, 0, 0], self.player.location, 10)
+		if self.rect.bottom >= self.game.ground_level:
+			self.velocity.y *= -.6
+		# self.velocity += self.gravity
+		self.velocity -= self.direction * .004
+		self.location += self.velocity
+		self.velocity *= .95
+		self.life -= 1
+		if self.life <= 0:
+			self.kill()

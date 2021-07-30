@@ -36,7 +36,7 @@ class Game:
 
 		# Game Settings
 		self.ground_level = int(self.height * .90)
-		self.fps = 120
+		self.fps = 60
 
 		# Spawn timing.
 		self.spawn_time = time.time()
@@ -71,7 +71,6 @@ class Game:
 		self.obstacles = []
 		self.triggers = []
 		self.particles = []
-
 		# self.setup_on_start()
 
 	def setup_on_start(self):
