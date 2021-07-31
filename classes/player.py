@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # PLAYER SPRITE_SHEET
 SPRITE_SHEET = pygame.transform.scale(pygame.image.load('./assets/character-min.png'), (100 * 4, 100 * 4))
@@ -43,6 +44,7 @@ class Player:
 			self.velocity.y -= 15 + self.speed * 2
 			self.velocity.x += self.velocity.x * .3
 			self.spritesheet_row = 2  # row 3(2) is jump animations
+			self.game.sounds.jump_sound.play()
 
 	def update(self):
 		if self.moving_left:
@@ -83,6 +85,8 @@ class Player:
 			if self.walk_counter > 60:
 				self.walk_counter = 0
 				self.frame_counter += 1 if self.frame_counter < 4 else - 3
+				if self.frame_counter % 2:
+					random.choice(self.game.sounds.walk_sounds).play()
 			return
 		# If going left set left walking animations
 		if self.velocity.x < - 0.1:
@@ -91,6 +95,8 @@ class Player:
 			if self.walk_counter > 60:
 				self.walk_counter = 0
 				self.frame_counter += 1 if self.frame_counter < 4 else - 3
+				if self.frame_counter % 2:
+					random.choice(self.game.sounds.walk_sounds).play()
 			return
 		else:
 			self.walk_counter = 0

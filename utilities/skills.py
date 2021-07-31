@@ -173,7 +173,7 @@ skills_info = [
 	{
 		"text": "Microsoft Excel.",
 		"skill_dust": "600",
-		"structure": "excel_temple.png"
+		"structure": "excel_temple"
 	},
 	{
 		"text": "I went deep on spreadsheets,",

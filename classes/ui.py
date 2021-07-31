@@ -17,23 +17,23 @@ class Ui:
 		self.skilldust_this_lvl = int(self.game.state_dict["skill_dust"])
 		self.skills = 0
 		self.total_diversity = levels
-		self.diversity = 0
+		self.diversity = 70
 		self.flash_timer = 0
 
 		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
 		self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
 
 	def add_skill_dust(self):
-		self.skills += 1
+		self.skills += 2
 		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
 		if self.skills == self.skilldust_this_lvl:
-			self.game.diversity_lvl_up()
-			self.diversity += 1
 			self.skills = 0
-			self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
-
-	def spawn_new_structure(self):
-		pass
+			if self.diversity < self.total_diversity - 1:
+				self.diversity += 1
+				self.game.diversity_lvl_up(self.diversity)
+				self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
+			elif not self.game.free_play:
+				self.game.game_finish()
 
 	def draw(self):
 		# Background

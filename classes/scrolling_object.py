@@ -71,6 +71,7 @@ class Skill(ScrollingObject):
 				SkillDust(
 					self.game, pygame.Surface((5, 5)), pygame.Vector2(
 						self.location.x + self.rect.width / 2, self.location.y + self.rect.height / 2), self.player.velocity))
+		self.game.sounds.skill_grab_sound.play()
 
 	def kill(self):
 		if self in self.game.skills.copy():
@@ -96,6 +97,7 @@ class Obstacle(ScrollingObject):
 		if self.rect.colliderect(self.player.hit_box):
 			bounce_vec = pygame.Vector2(pygame.Vector2(self.player.hit_box.center) - self.rect.center).normalize()
 			self.player.velocity += bounce_vec * 5
+			self.game.sounds.hit_sound.play()
 
 	def kill(self):
 		if self in self.game.obstacles.copy():
@@ -160,6 +162,7 @@ class SkillDust(Particle):
 	def arrive(self):
 		if self.rect.colliderect(self.game.ui.rect):
 			self.game.ui.add_skill_dust()
+			self.game.sounds.dust_sound.play()
 			self.kill()
 
 	def update(self):

@@ -8,9 +8,12 @@ from classes.player import Player
 from classes.scrolling_object import Structure, Obstacle, Skill
 from classes.ui import Ui
 from classes.banner import Banner
+from classes.sounds import Sounds
 from utilities.skills import skills_info
 
 pygame.init()
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.set_num_channels(64)
 
 # IMAGES
 # - Backgrounds - #
@@ -34,6 +37,8 @@ banners = [
 	pygame.image.load('./assets/banner-min.png'),
 ]
 
+pygame.mixer.music.load('./assets/start_music.wav')
+pygame.mixer.music.set_volume(.5)
 
 class Game:
 	"""The main class overseeing all other classes. Player, structures, enemies, and
@@ -41,13 +46,18 @@ class Game:
 	def __init__(self, width, height):
 		self.width, self.height = width, height
 		self.screen = pygame.display.set_mode((width, height))
+		pygame.display.set_caption("My coding journey.")
 
 		# Game Settings
 		self.ground_level = int(self.height * .90)
 		self.fps = 90
 		# Different states and their accompanying information
+		self.max_skills = 4
+		self.max_obstacles = 5
+		self.free_play = False
 		self.state = 0
 		self.state_dict = skills_info[self.state]
+		self.sounds = Sounds(self)
 
 		# Spawn timing.
 		self.spawn_time = time.time()
@@ -81,9 +91,18 @@ class Game:
 		self.setup_on_start()
 
 	def setup_on_start(self):
-		new_vec = pygame.Vector2(random.randint(600, 1000),  self.ground_level - random.randint(40, 400))
+		pygame.mixer.music.play(1)
+		new_vec = pygame.Vector2(600,  self.ground_level - 200)
 		self.skills.append(
 			Skill(self, random.choice(rocks), new_vec))
+		new_vec = pygame.Vector2(1000, self.ground_level - 400)
+		self.skills.append(
+			Skill(self, random.choice(rocks), new_vec))
+
+	def game_finish(self):
+		self.free_play = True
+		pygame.mixer.music.load('./assets/coffee_at_midnight.wav')
+		pygame.mixer.music.play(-1)
 
 	def background_scroll(self, amt):
 		for i in self.backgrounds:
@@ -92,9 +111,8 @@ class Game:
 			i.scroll(amt)
 
 	def spawn_skill(self):
-		max_skills = 5
-		if len(self.skills) < max_skills:
-			rand_x_offset = random.randint(self.width, self.width * 2)
+		if len(self.skills) < self.max_skills:
+			rand_x_offset = random.randint(self.width, self.width * 3)
 			rand_y_offset = random.choice([50, 200, 400])
 			new_vec = pygame.Vector2(self.player.location.x + rand_x_offset, self.ground_level - rand_y_offset)
 			self.skills.append(
@@ -119,9 +137,12 @@ class Game:
 			if random.randint(0, self.obstacle_spawn_timer) < 2:
 				self.spawn_obstacle()
 
-	def diversity_lvl_up(self):
-		self.state += 1
+	def diversity_lvl_up(self, level):
+		if self.free_play:
+			return
+		self.state = level
 		self.state_dict = skills_info[self.state]
+		self.sounds.diversity_up_sound.play()
 		for i in self.banners:
 			i.y_offset += i.rect.height
 		self.banners.append(Banner(self, self.state_dict["text"]))
