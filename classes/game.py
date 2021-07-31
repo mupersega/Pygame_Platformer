@@ -129,7 +129,6 @@ class Game:
 
 	def spawn(self):
 		if self.spawn_time < time.time():
-			print("spawning")
 			self.spawn_time += 1
 			# Spawn a skill off screen
 			if random.randint(0, self.skill_spawn_timer) < 2:
