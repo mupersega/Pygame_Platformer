@@ -26,7 +26,7 @@ class Ui:
 		self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
 
 	def add_skill_dust(self):
-		self.skills += 1
+		self.skills += 2
 		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
 		if self.skills == self.skilldust_this_lvl:
 			self.game.diversity_lvl_up(self.diversity)
@@ -34,6 +34,7 @@ class Ui:
 			if self.diversity > self.total_diversity - 5 and not self.finish_music:
 				pygame.mixer.music.load('./assets/coffee_at_midnight.wav')
 				pygame.mixer.music.play(-1)
+				self.finish_music = True
 			if self.diversity < self.total_diversity - 1:
 				self.diversity += 1
 				self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
