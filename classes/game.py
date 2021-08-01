@@ -7,7 +7,7 @@ from classes.background import Background
 from classes.player import Player
 from classes.scrolling_object import Structure, Obstacle, Skill
 from classes.ui import Ui
-from classes.banner import Banner, Controls
+from classes.banner import Banner
 from classes.sounds import Sounds
 from utilities.skills import skills_info
 
@@ -18,8 +18,10 @@ pygame.mixer.set_num_channels(64)
 # IMAGES
 # - Backgrounds - #
 grass_bg = pygame.image.load('./assets/full_bg_grass-min.png')
-sky_bg = pygame.image.load('./assets/full_bg_sky-min.png')
-trees_bg = pygame.image.load('./assets/full_bg_trees-min.png')
+sky_bg = pygame.image.load('./assets/full_bg_sky.png')
+sky_bg.set_alpha(None)
+trees_bg = pygame.image.load('./assets/full_bg_trees.png')
+trees_bg.set_colorkey([0, 0, 0])
 shrubs_bg = pygame.image.load('./assets/full_bg_shrubs-min.png')
 # - Player - #
 player_spritesheet = pygame.transform.scale(pygame.image.load('./assets/character-min.png'), (100 * 4, 100 * 4))
@@ -30,13 +32,16 @@ coder_academy_img = pygame.image.load('./assets/coder_academy-min.png')
 # - Obstacles - #
 rocks = [
 	pygame.image.load('./assets/rock_1-min.png'),
-	pygame.image.load('./assets/rock_2-min.png')
+	pygame.image.load('./assets/rock_2-min.png'),
+	pygame.image.load('./assets/rock_3-min.png')
 ]
 # - Exp - #
 exp_img = pygame.image.load('./assets/exp-min.png')
 # - UI - #
-ui_img = pygame.image.load('./assets/ui-min.png')
+ui_img = pygame.image.load('./assets/ui.png')
 # - Banners - #
+controls_img = pygame.image.load('./assets/controls.png')
+controls_img.set_colorkey([0, 0, 0])
 banners = [
 	pygame.image.load('./assets/banner-min.png'),
 ]
@@ -54,7 +59,7 @@ class Game:
 		pygame.display.set_caption("My coding journey.")
 
 		# Game Settings
-		self.ground_level = int(self.height * .90)
+		self.ground_level = int(self.height * .905)
 		self.fps = 90
 		# Different states and their accompanying information
 		self.max_skills = 4
@@ -93,7 +98,6 @@ class Game:
 		self.triggers = []
 		self.particles = []
 		self.banners = []
-		self.controls_banners = [Controls(self, "CONTROLS - LEFT, RIGHT, T, SPACEBAR")]
 		self.setup_on_start()
 
 	def setup_on_start(self):
@@ -199,14 +203,15 @@ class Game:
 			# Spawning
 			self.spawn()
 			# Drawing and loops
-			self.screen.fill([40, 40, 100])
+			self.screen.fill([100, 100, 100])
 			self.run_loops(self.backgrounds)
 			# pygame.draw.line(self.screen, [100, 0, 0], (0, self.ground_level), (self.width, self.ground_level))
 			self.run_loops(self.structures, self.particles, self.obstacles, self.skills)
 			self.run_loop(self.player)
 			self.run_loops(self.foregrounds)
-			self.run_loops(self.banners, self.controls_banners)
+			self.run_loops(self.banners)
 			self.run_loop(self.ui)
+			self.screen.blit(controls_img, (0, 0))
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
 

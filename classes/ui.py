@@ -10,9 +10,10 @@ class Ui:
 		self.width = self.game.width * .2
 		self.height = self.game.height * .1
 		self.rect = pygame.Rect((self.game.width / 2 - self.width / 2, 10), (self.width, self.height))
-		self.diversity_rect = pygame.Rect(self.rect.left, self.rect.top, self.rect.width, self.rect.height / 2)
-		self.skills_rect = pygame.Rect(self.rect.left, self.rect.centery, self.rect.width, self.rect.height / 2)
+		self.diversity_rect = pygame.Rect(self.rect.left, self.rect.top, self.rect.width - 2, self.rect.height / 2 - 2)
+		self.skills_rect = pygame.Rect(self.rect.left, self.rect.centery, self.rect.width - 2, self.rect.height / 2 - 2)
 		self.image = pygame.transform.scale(img, self.rect.size).convert()
+		self.image.set_colorkey((0, 0, 0))
 
 		self.skilldust_this_lvl = int(self.game.state_dict["skill_dust"])
 		self.skills = 0
@@ -37,15 +38,15 @@ class Ui:
 
 	def draw(self):
 		# Background
-		pygame.draw.rect(self.screen, [80, 80, 80], self.diversity_rect)
+		pygame.draw.rect(self.screen, [100, 20, 0], self.diversity_rect)
 		pygame.draw.rect(self.screen, [122, 25, 100], self.skills_rect)
 		# Main
-		pygame.draw.rect(self.screen, [200, 0, 0], (self.rect.topleft, (
+		pygame.draw.rect(self.screen, [255, 100, 0], (self.rect.topleft, (
 			self.width * self.diversity / self.total_diversity, self.height * .5)))
 		pygame.draw.rect(self.screen, [255, 50, 200], (self.skills_rect.topleft, (
 			self.width * self.skills / self.skilldust_this_lvl, self.height * .5)))
 		# Line
-		pygame.draw.line(self.screen, [255, 100, 100], (
+		pygame.draw.line(self.screen, [255, 150, 150], (
 			self.diversity_x, self.diversity_rect.top), (self.diversity_x, self.diversity_rect.bottom), width=1)
 		pygame.draw.line(self.screen, [255, 100, 230], (
 			self.skills_x, self.skills_rect.top), (self.skills_x, self.skills_rect.bottom), width=1)
