@@ -11,23 +11,23 @@ skills_info = [
 		"structure": "None"
 	},
 	{
-		"text": "I made this game to tell you a story.",
-		"skill_dust": "600",
+		"text": "I made this game to tell you a story,",
+		"skill_dust": "400",
 		"structure": "None"
 	},
 	{
-		"text": "Let's get started hey?",
-		"skill_dust": "500",
-		"structure": "excel_temple"
+		"text": "so be sure to turn your sound on.",
+		"skill_dust": "400",
+		"structure": "None"
+	},
+	{
+		"text": "Let's get started?",
+		"skill_dust": "800",
+		"structure": "None"
 	},
 	{
 		"text": "The things I've learnt on my coding journey.",
-		"skill_dust": "600",
-		"structure": "None"
-	},
-	{
-		"text": "Let's skip the early years.",
-		"skill_dust": "600",
+		"skill_dust": "700",
 		"structure": "None"
 	},
 	{
@@ -268,7 +268,7 @@ skills_info = [
 	{
 		"text": "A few false starts later,",
 		"skill_dust": "400",
-		"structure": "None"
+		"structure": "python_pod"
 	},
 	{
 		"text": "and I got hooked on python,",
@@ -307,6 +307,11 @@ skills_info = [
 	},
 	{
 		"text": "types,",
+		"skill_dust": "400",
+		"structure": "None"
+	},
+	{
+		"text": "vectors,",
 		"skill_dust": "400",
 		"structure": "None"
 	},
@@ -358,7 +363,7 @@ skills_info = [
 	{
 		"text": "I can't wait to begin the bootcamp,",
 		"skill_dust": "400",
-		"structure": "None"
+		"structure": "coder_academy"
 	},
 	{
 		"text": "and learn all about fullstack web dev.",
@@ -371,7 +376,7 @@ skills_info = [
 		"structure": "None"
 	},
 	{
-		"text": "and would very much appreciate consideration for the,",
+		"text": "and would so appreciate consideration for the,",
 		"skill_dust": "400",
 		"structure": "None"
 	},
@@ -381,7 +386,7 @@ skills_info = [
 		"structure": "None"
 	},
 	{
-		"text": "Thank you for playing.",
+		"text": "Thank you.",
 		"skill_dust": "600",
 		"structure": "None"
 	},

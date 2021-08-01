@@ -12,13 +12,13 @@ class Ui:
 		self.rect = pygame.Rect((self.game.width / 2 - self.width / 2, 10), (self.width, self.height))
 		self.diversity_rect = pygame.Rect(self.rect.left, self.rect.top, self.rect.width - 2, self.rect.height / 2 - 2)
 		self.skills_rect = pygame.Rect(self.rect.left, self.rect.centery, self.rect.width - 2, self.rect.height / 2 - 2)
-		self.image = pygame.transform.scale(img, self.rect.size).convert()
+		self.image = pygame.transform.scale(img, (self.rect.width + 2, self.rect.height + 2)).convert()
 		self.image.set_colorkey((0, 0, 0))
 
 		self.skilldust_this_lvl = int(self.game.state_dict["skill_dust"])
 		self.skills = 0
 		self.total_diversity = levels
-		self.diversity = 70
+		self.diversity = 0
 		self.flash_timer = 0
 
 		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
