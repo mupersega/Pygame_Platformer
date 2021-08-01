@@ -33,7 +33,7 @@ class Structure(ScrollingObject):
 	def __init__(self, game, image, location):
 		super().__init__(game, image, location)
 		self.image = image.convert()
-		self.image = self.scale_image(self.image, 5)
+		self.image = self.scale_image(self.image, 4)
 		self.location = pygame.Vector2(location.x, location.y - self.image.get_height())
 		self.rect = pygame.Rect(self.location, self.image.get_size())
 		self.loot = []
@@ -51,15 +51,14 @@ class Structure(ScrollingObject):
 class Skill(ScrollingObject):
 	def __init__(self, game, image, location):
 		super().__init__(game, image, location)
+		self.rect = pygame.Rect(self.location, (self.image.get_width() / 6, self.image.get_height()))
+		self.counter = 0
+		self.step = random.randint(0, 5)
 
 	def check_collision(self):
 		if self.rect.colliderect(self.player.hit_box):
 			self.spawn_particles()
-			self.update_progress()
 			self.kill()
-
-	def update_progress(self):
-		self.game.ui.add_skill_dust()
 
 	def spawn_particles(self):
 		for _ in range(random.randint(10, 15)):
@@ -81,9 +80,16 @@ class Skill(ScrollingObject):
 		if self.location.distance_to(self.player.location) > 5000:
 			self.kill()
 
+	def draw(self):
+		self.screen.blit(self.image, self.rect.topleft, (self.rect.width * self.step, 0, self.rect.width, self.rect.height))
+		self.counter += 1
+		if self.counter % 10 == 0:
+			self.counter = 0
+			self.step += 1 if self.step < 5 else -5
+
 	def loop(self):
+		self.cleanup()
 		if self.on_screen():
-			self.cleanup()
 			self.update_rect()
 			self.draw()
 			self.check_collision()
@@ -118,13 +124,13 @@ class Obstacle(ScrollingObject):
 class Particle(ScrollingObject):
 	def __init__(self, game, image, location, vel):
 		super().__init__(game, image, location)
-		self.size = random.randint(2, 4)
+		self.size = random.randint(2, 8)
 		self.life = random.randint(100, 200)
 		self.rgb = random.choice([(255, 255, 0), (255, 220, 150), (180, 180, 0)])
 		# Vectors.
 		self.inherited_velocity = pygame.Vector2(vel) * 1
 		self.velocity = pygame.Vector2(
-			random.uniform(-2, 2) * self.size, random.uniform(-1, -2) * self.size) + self.inherited_velocity
+			random.uniform(-2, 2) * self.size, random.uniform(-1, -2) * self.size * .5) + self.inherited_velocity
 		self.gravity = pygame.Vector2(
 			0, random.uniform(1, 2))
 
@@ -142,8 +148,8 @@ class Particle(ScrollingObject):
 			self.kill()
 
 	def draw(self):
-		pygame.draw.rect(self.screen, self.rgb, self.rect)
-		pygame.draw.rect(self.screen, [0, 0, 50], self.rect, width=1)
+		pygame.draw.rect(self.screen, self.rgb, (self.rect.center, (self.size, self.size)))
+		pygame.draw.rect(self.screen, [0, 0, 50], (self.rect.center, (self.size, self.size)), width=1)
 
 	def loop(self):
 		self.update_rect()
@@ -156,7 +162,7 @@ class SkillDust(Particle):
 		super().__init__(game, image, location, vel)
 		self.direction = pygame.Vector2(self.location - self.player.location).normalize()
 		self.velocity = pygame.Vector2(
-			random.uniform(-3, 3) * self.size, random.uniform(3, 10) * self.size) - self.inherited_velocity
+			random.uniform(-3, 3) * self.size, random.uniform(3, 10) * self.size * .5) - self.inherited_velocity
 		self.rgb = random.choice([(255, 0, 150), (255, 100, 255), (200, 50, 255)])
 
 	def arrive(self):
@@ -175,6 +181,6 @@ class SkillDust(Particle):
 		self.velocity -= self.direction * .002
 		self.location += self.velocity
 		self.velocity *= .97
-		self.life -= 1
 		if self.life <= 0:
 			self.kill()
+

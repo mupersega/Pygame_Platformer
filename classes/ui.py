@@ -24,13 +24,13 @@ class Ui:
 		self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
 
 	def add_skill_dust(self):
-		self.skills += 2
+		self.skills += 1
 		self.skills_x = self.rect.left + self.width * self.skills / self.skilldust_this_lvl
 		if self.skills == self.skilldust_this_lvl:
+			self.game.diversity_lvl_up(self.diversity)
 			self.skills = 0
 			if self.diversity < self.total_diversity - 1:
 				self.diversity += 1
-				self.game.diversity_lvl_up(self.diversity)
 				self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
 			elif not self.game.free_play:
 				self.game.game_finish()

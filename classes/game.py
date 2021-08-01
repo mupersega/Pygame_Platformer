@@ -7,7 +7,7 @@ from classes.background import Background
 from classes.player import Player
 from classes.scrolling_object import Structure, Obstacle, Skill
 from classes.ui import Ui
-from classes.banner import Banner
+from classes.banner import Banner, Controls
 from classes.sounds import Sounds
 from utilities.skills import skills_info
 
@@ -25,11 +25,15 @@ shrubs_bg = pygame.image.load('./assets/full_bg_shrubs-min.png')
 player_spritesheet = pygame.transform.scale(pygame.image.load('./assets/character-min.png'), (100 * 4, 100 * 4))
 # - Structures - #
 excel_temple_img = pygame.image.load('./assets/excel_temple_outer-min.png')
+python_pod_img = pygame.image.load('./assets/python_pod-min.png')
+coder_academy_img = pygame.image.load('./assets/coder_academy-min.png')
 # - Obstacles - #
 rocks = [
 	pygame.image.load('./assets/rock_1-min.png'),
 	pygame.image.load('./assets/rock_2-min.png')
 ]
+# - Exp - #
+exp_img = pygame.image.load('./assets/exp-min.png')
 # - UI - #
 ui_img = pygame.image.load('./assets/ui-min.png')
 # - Banners - #
@@ -39,6 +43,7 @@ banners = [
 
 pygame.mixer.music.load('./assets/start_music.wav')
 pygame.mixer.music.set_volume(.5)
+
 
 class Game:
 	"""The main class overseeing all other classes. Player, structures, enemies, and
@@ -70,7 +75,7 @@ class Game:
 		self.player = Player(self, player_spritesheet.convert())
 
 		self.backgrounds = [
-			# Background(self, 7, sky_bg.convert()),
+			Background(self, 7, sky_bg.convert()),
 			Background(self, 3, trees_bg.convert())
 			# Background(self, 1, grass_bg.convert())
 		]
@@ -88,16 +93,17 @@ class Game:
 		self.triggers = []
 		self.particles = []
 		self.banners = []
+		self.controls_banners = [Controls(self, "CONTROLS - LEFT, RIGHT, T, SPACEBAR")]
 		self.setup_on_start()
 
 	def setup_on_start(self):
 		pygame.mixer.music.play(1)
 		new_vec = pygame.Vector2(600,  self.ground_level - 200)
 		self.skills.append(
-			Skill(self, random.choice(rocks), new_vec))
+			Skill(self, exp_img, new_vec))
 		new_vec = pygame.Vector2(1000, self.ground_level - 400)
 		self.skills.append(
-			Skill(self, random.choice(rocks), new_vec))
+			Skill(self, exp_img, new_vec))
 
 	def game_finish(self):
 		self.free_play = True
@@ -116,7 +122,7 @@ class Game:
 			rand_y_offset = random.choice([50, 200, 400])
 			new_vec = pygame.Vector2(self.player.location.x + rand_x_offset, self.ground_level - rand_y_offset)
 			self.skills.append(
-				Skill(self, random.choice(rocks), new_vec))
+				Skill(self, exp_img, new_vec))
 
 	def spawn_obstacle(self):
 		max_obstacles = 10
@@ -193,13 +199,13 @@ class Game:
 			# Spawning
 			self.spawn()
 			# Drawing and loops
-			self.screen.fill([0, 0, 0])
+			self.screen.fill([40, 40, 100])
 			self.run_loops(self.backgrounds)
 			# pygame.draw.line(self.screen, [100, 0, 0], (0, self.ground_level), (self.width, self.ground_level))
 			self.run_loops(self.structures, self.particles, self.obstacles, self.skills)
 			self.run_loop(self.player)
 			self.run_loops(self.foregrounds)
-			self.run_loops(self.banners)
+			self.run_loops(self.banners, self.controls_banners)
 			self.run_loop(self.ui)
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
