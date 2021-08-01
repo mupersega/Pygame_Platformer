@@ -1,13 +1,8 @@
 
 skills_info = [
 	{
-		"text": "None",
-		"skill_dust": "20",
-		"structure": "None"
-	},
-	{
 		"text": "Hi there, I'm Cam.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{
@@ -32,7 +27,7 @@ skills_info = [
 	},
 	{
 		"text": "While I was a uni student, I worked in bars and restaurants.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{
@@ -62,17 +57,17 @@ skills_info = [
 	},
 	{
 		"text": "and coffee, coffee's the best.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{
 		"text": "Yep, I was a uni student.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{
 		"text": "I studied music at the Queensland Con.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{
@@ -82,7 +77,7 @@ skills_info = [
 	},
 	{
 		"text": "opera singing.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{
@@ -102,7 +97,7 @@ skills_info = [
 	},
 	{
 		"text": "not to mention, music production.",
-		"skill_dust": "600",
+		"skill_dust": "60",
 		"structure": "None"
 	},
 	{

@@ -111,8 +111,6 @@ class Game:
 
 	def game_finish(self):
 		self.free_play = True
-		pygame.mixer.music.load('./assets/coffee_at_midnight.wav')
-		pygame.mixer.music.play(-1)
 
 	def background_scroll(self, amt):
 		for i in self.backgrounds:

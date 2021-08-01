@@ -14,6 +14,7 @@ class Ui:
 		self.skills_rect = pygame.Rect(self.rect.left, self.rect.centery, self.rect.width - 2, self.rect.height / 2 - 2)
 		self.image = pygame.transform.scale(img, (self.rect.width + 2, self.rect.height + 2)).convert()
 		self.image.set_colorkey((0, 0, 0))
+		self.finish_music = False
 
 		self.skilldust_this_lvl = int(self.game.state_dict["skill_dust"])
 		self.skills = 0
@@ -30,9 +31,13 @@ class Ui:
 		if self.skills == self.skilldust_this_lvl:
 			self.game.diversity_lvl_up(self.diversity)
 			self.skills = 0
+			if self.diversity > self.total_diversity - 5 and not self.finish_music:
+				pygame.mixer.music.load('./assets/coffee_at_midnight.wav')
+				pygame.mixer.music.play(-1)
 			if self.diversity < self.total_diversity - 1:
 				self.diversity += 1
 				self.diversity_x = self.rect.left + self.width * self.diversity / self.total_diversity
+				self.skilldust_this_lvl = int(self.game.state_dict["skill_dust"])
 			elif not self.game.free_play:
 				self.game.game_finish()
 
