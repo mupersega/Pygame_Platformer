@@ -1,5 +1,4 @@
-# scholarship_game
-My coding journey.
+# My coding journey - Pygame platformer
 
 Hi there, here is the code for the my coding journey game that I submitted for the Diversity in Tech scholarship.
 
@@ -16,4 +15,4 @@ world and drawing the surface in his locale and then blitting that surface to th
 ## Should you wish to run this code by all means DO
 All you need is latest python and latest pygame.
 
-N.B. This code is not beautiful, and the game is not endlessly scalable. It was more an exercise in telling my story and providing little sparks of wonder.
+N.B. This code is not beautiful, and the game is not endlessly scalable. It was more an exercise in telling my story and providing little sparks of wonder. This was made before I began study at Coder Academy Brisbane.
