@@ -14,4 +14,4 @@ This game requires at least:
 - python 3.8
 - pygame 2.0.1
 
-**N.B. This code is not beautiful, and the game is not endlessly scalable. It was more an exercise in telling my story and providing little sparks of wonder. This was made before I began study at Coder Academy Brisbane.**
+**N.B. This code is not beautiful. It was more an exercise in telling my story and providing little sparks of wonder. This was made before I began study at Coder Academy Brisbane.**
